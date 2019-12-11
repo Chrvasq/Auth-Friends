@@ -1,18 +1,30 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
 import Friend from "./Friend";
 import AddFriendForm from "./AddFriendForm";
 
 const FriendsList = props => {
+  const [friends, setFriends] = useState();
+
+  const getFriendsData = () => {
+    axiosWithAuth()
+      .get("/friends")
+      .then(res => {
+        setFriends(res.data);
+      })
+      .catch(err => console.log(err.message));
+  };
+
   useEffect(() => {
-    props.getFriendsData();
+    getFriendsData();
   }, []);
 
   return (
     <div>
-      <AddFriendForm setFriends={props.setFriends} />
-      {props.friends ? (
-        props.friends.map((friend, index) => (
-          <Friend key={index} friend={friend} setFriends={props.setFriends} />
+      <AddFriendForm setFriends={setFriends} />
+      {friends ? (
+        friends.map((friend, index) => (
+          <Friend key={index} friend={friend} setFriends={setFriends} />
         ))
       ) : (
         <p>Loading...</p>
