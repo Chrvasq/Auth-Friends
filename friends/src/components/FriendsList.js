@@ -12,7 +12,7 @@ const FriendsList = props => {
       <AddFriendForm setFriends={props.setFriends} />
       {props.friends ? (
         props.friends.map((friend, index) => (
-          <Friend key={index} friend={friend} />
+          <Friend key={index} friend={friend} setFriends={props.setFriends} />
         ))
       ) : (
         <p>Loading...</p>
