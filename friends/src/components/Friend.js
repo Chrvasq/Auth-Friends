@@ -8,6 +8,8 @@ const Friend = props => {
     age: "",
     email: ""
   });
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [friendToDelete, setFriendToDelete] = useState({ id: "" });
 
   const handleChange = e => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
@@ -31,6 +33,23 @@ const Friend = props => {
         })
         .catch(err => console.log(err.message));
     }
+  };
+
+  const triggerDeleteConfirmation = e => {
+    e.preventDefault();
+    setIsDeleting(true);
+  };
+
+  const handleDelete = e => {
+    setFriendToDelete(e.target.id);
+    axiosWithAuth()
+      .delete(`/friends/${e.target.id}`, friendToDelete)
+      .then(res => {
+        setIsDeleting(false);
+        setFriendToDelete({ id: "" });
+        props.setFriends(res.data);
+      })
+      .catch(err => console.log(err.message));
   };
 
   return (
@@ -74,6 +93,21 @@ const Friend = props => {
       <button id={props.friend.id} onClick={handleEdit}>
         {editMode ? "Commit Changes" : "Edit Friend"}
       </button>
+      <button
+        id={props.friend.id}
+        onClick={triggerDeleteConfirmation}
+        style={isDeleting ? { display: "none" } : null}
+      >
+        Delete Friend
+      </button>
+      {isDeleting ? (
+        <button id={props.friend.id} onClick={handleDelete}>
+          {" "}
+          Are you sure?
+        </button>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
