@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
-import { Route, Link } from "react-router-dom";
+import { Route, Link, Switch } from "react-router-dom";
+import { axiosWithAuth } from "./utils/axiosWithAuth";
 import LoginForm from "./components/LoginForm";
 import PrivateRoute from "./components/PrivateRoute";
 import FriendsList from "./components/FriendsList";
 
 function App() {
+  const [friends, setFriends] = useState();
+
+  const getFriendsData = () => {
+    axiosWithAuth()
+      .get("/friends")
+      .then(res => {
+        setFriends(res.data);
+      })
+      .catch(err => console.log(err.message));
+  };
+
   return (
     <div className="App">
       <ul>
@@ -16,8 +28,18 @@ function App() {
           <Link to="/friends">Friends List</Link>
         </li>
       </ul>
-      <Route path="/login" component={LoginForm} />
-      <PrivateRoute exact path="/friends" component={FriendsList} />
+      <Switch>
+        <PrivateRoute
+          exact
+          path="/friends"
+          component={FriendsList}
+          friends={friends}
+          setFriends={setFriends}
+          getFriendsData={getFriendsData}
+        />
+        <Route path="/login" component={LoginForm} />
+        <Route component={LoginForm} />
+      </Switch>
     </div>
   );
 }
