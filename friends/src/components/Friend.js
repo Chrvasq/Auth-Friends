@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 const Friend = props => {
+  const { name, age, email, id } = props.friend;
+
   const [editMode, setEditMode] = useState(false);
   const [formValues, setFormValues] = useState({
     name: "",
@@ -20,9 +22,9 @@ const Friend = props => {
     setEditMode(true);
     setFormValues({
       ...formValues,
-      name: props.friend.name,
-      age: props.friend.age,
-      email: props.friend.email
+      name: name,
+      age: age,
+      email: email
     });
     if (editMode === true) {
       axiosWithAuth()
@@ -63,7 +65,7 @@ const Friend = props => {
             onChange={handleChange}
           />
         ) : (
-          props.friend.name
+          name
         )}
       </h1>
       <p>
@@ -75,7 +77,7 @@ const Friend = props => {
             onChange={handleChange}
           />
         ) : (
-          props.friend.age
+          age
         )}
       </p>
       <p>
@@ -87,27 +89,27 @@ const Friend = props => {
             onChange={handleChange}
           />
         ) : (
-          props.friend.email
+          email
         )}
       </p>
-      <button id={props.friend.id} onClick={handleEdit}>
+      <button id={id} onClick={handleEdit}>
         {editMode ? "Commit Changes" : "Edit Friend"}
       </button>
       <button
-        id={props.friend.id}
+        id={id}
         onClick={triggerDeleteConfirmation}
         style={isDeleting ? { display: "none" } : null}
       >
         Delete Friend
       </button>
       {isDeleting ? (
-        <button id={props.friend.id} onClick={handleDelete}>
-          {" "}
-          Are you sure?
-        </button>
-      ) : (
-        ""
-      )}
+        <div>
+          <button id={id} onClick={handleDelete}>
+            Confirm Delete
+          </button>
+          <button onClick={() => setIsDeleting(false)}>Cancel</button>
+        </div>
+      ) : null}
     </div>
   );
 };
