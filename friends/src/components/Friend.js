@@ -11,7 +11,6 @@ const Friend = props => {
     email: ""
   });
   const [isDeleting, setIsDeleting] = useState(false);
-  const [friendToDelete, setFriendToDelete] = useState({ id: "" });
 
   const handleChange = e => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
@@ -43,12 +42,10 @@ const Friend = props => {
   };
 
   const handleDelete = e => {
-    setFriendToDelete(e.target.id);
     axiosWithAuth()
-      .delete(`/friends/${e.target.id}`, friendToDelete)
+      .delete(`/friends/${e.target.id}`)
       .then(res => {
         setIsDeleting(false);
-        setFriendToDelete({ id: "" });
         props.setFriends(res.data);
       })
       .catch(err => console.log(err.message));
